@@ -196,6 +196,60 @@ http://<SERVER_IP>:3000
 
 ---
 
+## Running Automatically on Windows (Auto-Start on Reboot / Power On)
+
+To ensure the webapp starts automatically every time your Windows PC boots up or restarts after being powered off:
+
+### Method 1: Windows Startup Folder (Simplest & Recommended)
+
+This automatically starts the server as soon as Windows boots up and you log in:
+
+1. Press `Win + R` on your keyboard to open the **Run** dialog.
+2. Type `shell:startup` and press **Enter**. This opens your Windows Startup folder:
+   ```text
+   C:\Users\<YourUser>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+   ```
+3. Inside this folder, **right-click in an empty space** -> **New** -> **Shortcut**.
+4. Click **Browse...** and select `start.bat` located inside your site readiness folder (for example: `C:\Users\username\site-readiness\start.bat`).
+5. Click **Next**, name the shortcut `Site Readiness WebApp`, and click **Finish**.
+
+> **💡 Pro Tips for Startup Shortcut:**
+> - **Auto-open the browser to the app:** Right-click your new shortcut -> **Properties** -> in the **Target** box, append ` open` at the very end after the quotes:  
+>   `"C:\path\to\site-readiness\start.bat" open`
+> - **Start Minimized (keep desktop clean):** In the same **Properties** window, change the **Run** dropdown from **Normal window** to **Minimized**. Click **OK**.
+
+---
+
+### Method 2: Windows Task Scheduler (Runs on Boot Without User Login)
+
+Use this method if the PC is a dedicated server or kiosk where it must run **immediately upon power-on even if no user logs in with a password**:
+
+1. Press `Win + S`, search for **Task Scheduler**, and open it.
+2. In the right-hand **Actions** panel, click **Create Task...** (do not choose Basic Task).
+3. **General Tab:**
+   - **Name:** `Site Readiness Server`
+   - Select **"Run whether user is logged on or not"**
+   - Check **"Run with highest privileges"**
+   - Configure for: **Windows 10 / Windows 11**
+4. **Triggers Tab:**
+   - Click **New...**
+   - **Begin the task:** Select **At startup** (triggers immediately on PC power-on) or **At log on**.
+   - Click **OK**.
+5. **Actions Tab:**
+   - Click **New...**
+   - **Action:** Select **Start a program**
+   - **Program/script:** Browse to `start.bat` (e.g. `C:\site-readiness\start.bat`)
+   - **Start in (mandatory):** Enter the folder path where `start.bat` lives (e.g. `C:\site-readiness\`). *(Do not leave this blank)*.
+   - Click **OK**.
+6. **Conditions Tab:**
+   - Uncheck **"Start the task only if the computer is on AC power"** (ensures it starts if running on laptop or UPS backup battery).
+7. **Settings Tab:**
+   - Check **"If the task fails, restart every 1 minute"**.
+   - Uncheck **"Stop the task if it runs longer than 3 days"**.
+8. Click **OK** and enter your Windows account password when prompted.
+
+---
+
 ## Running as a Background Service on Linux (systemd)
 
 To keep the application running continuously in the background and auto-start on reboot:

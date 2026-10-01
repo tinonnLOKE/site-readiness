@@ -59,6 +59,11 @@ echo [INFO] Local URL:   http://localhost:3000
 echo [INFO] Network URL: http://0.0.0.0:3000
 echo [INFO] Press Ctrl + C to stop the server.
 echo.
+if "%1"=="--open" (
+    start "" "http://localhost:3000"
+) else if "%1"=="open" (
+    start "" "http://localhost:3000"
+)
 python scripts\run_server.py
 
 if %errorlevel% neq 0 (
